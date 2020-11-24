@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Список вузов Москвы</h1>
+    <input type="search" id="search">
+    <ol id="list">
+        <li>МГТУ (289)</li>
+        <li>МИСиС (289)</li>
+        <li>МГУКИ (289)</li>
+        <li>МФТИ (289)</li>
+        <li>МИРЭА (289)</li>
+        <li>МИФИ (289)</li>
+    </ol>
+
+    <script>
+        async function main() {
+            const search = document.getElementById('search');
+            const list = document.querySelector('#list');
+            
+            search.addEventListener('input', event => {
+                const query = event.target.value;
+                for (const li of list.children) {
+                    const name = li.textContent;
+                    if (name.includes(query)) {
+                        // Typos: li.style.dispaly = 'initial';
+                        li.style.display = 'list-item';
+                    } else {
+                        li.style.display = 'none';
+                    }
+                }
+            });
+        }
+
+        main();
+    </script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <h1>{{title}} ({{universities.length}})</h1>
+        <input v-bind:type="type" v-model="query" placeholder="Что вы ищете?">
+        <p v-if="query !== ''">Найдено {{filteredUniversities.length}}</p>
+        <ol id="list">
+            <list-item v-for="university of filteredUniversities" v-bind:university="university">
+            </list-item>
+        </ol>
+        <p>{{counter}}</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script>
+
+        function createSearchPredicate(query) {
+            query = query.toUpperCase()
+            return university => [
+                university.CommonName,
+                university.FullName,
+            ].some(name => name.toUpperCase().includes(query))
+        }
+
+        Vue.component('list-item' ,{
+            template: '<li>{{university.CommonName}} {{university.District}}</li>',
+            props: ['university']
+        })
+
+        const app = new Vue({
+            el: '#app',
+            data: {
+                query: '',
+                type: 'password',
+                title: 'Список вузов Москвы',
+                counter: 0,
+                universities: [],
+            },
+            computed: {
+                filteredUniversities: function() {
+                    const predicate = createSearchPredicate(this.query);
+                    const filtered = this.universities.filter(predicate);
+                    return filtered;
+                }
+            },
+            created: async function() {
+                this.universities = await fetch('/universities.json').then(r => r.json());
+                console.log(this.universities)
+
+                setInterval(() => {
+                    this.counter++;
+                    this.type = Math.random() > 0.5 ? 'search' : 'search'
+                }, 1000);
+            }
+        });
+    </script>
+</body>
+
+</html>
